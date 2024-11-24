@@ -4,7 +4,7 @@ class Conectar {
 
     protected function conectar_bd() {
         try {
-            $conexion = $this->conexion_bd = new PDO("mysql:host=localhost;dbname=inventario", "root", "");
+            $conexion = $this->conexion_bd = new PDO("mysql:host=autorack.proxy.rlwy.net:42658;dbname=inventario", "root", "qsuSOLSCpdVaWZActWqBYOCQyCRlgFlt");
             return $conexion;
         } catch (Exception $e) {
             print "Error en la base de datos: " . $e->getMessage() . "<br/>";
