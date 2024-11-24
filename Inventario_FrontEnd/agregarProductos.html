@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Inventario</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        header {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 1rem 0;
+            text-align: center;
+        }
+        .container {
+            margin-top: 2rem;
+        }
+        .form-control, .btn {
+            margin-bottom: 10px;
+        }
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Encabezado -->
+    <header>
+        <h1>Sistema de Inventario</h1>
+    </header>
+
+    <!-- Contenedor Principal -->
+    <div class="container">
+        <!-- Formulario para Gestión -->
+        <div class="row">
+            <div class="col-md-4">
+                <h2>Gestión de Productos</h2>
+                <form id="productForm">
+                    <div class="mb-3">
+                        <label for="nombre" class="form-label">Nombre del Producto</label>
+                        <input type="text" class="form-control" id="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcion" class="form-label">Descripción</label>
+                        <textarea class="form-control" id="descripcion"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="precio" class="form-label">Precio</label>
+                        <input type="number" class="form-control" id="precio" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="cantidad" class="form-label">Cantidad</label>
+                        <input type="number" class="form-control" id="cantidad" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="categoria" class="form-label">Categoría</label>
+                        <select class="form-control" id="categoria" required>
+                            <option value="">Seleccione...</option>
+                            <option value="1">Electrónica</option>
+                            <option value="2">Hogar</option>
+                            <option value="3">Oficina</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="proveedor" class="form-label">Proveedor</label>
+                        <select class="form-control" id="proveedor" required>
+                            <option value="">Seleccione...</option>
+                            <option value="1">Proveedor A</option>
+                            <option value="2">Proveedor B</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="addBtn">Agregar</button>
+                    <button type="button" class="btn btn-success" id="editBtn" disabled>Editar</button>
+                    <button type="button" class="btn btn-danger" id="deleteBtn" disabled>Eliminar</button>
+                    <button type="button" class="btn btn-secondary" id="clearBtn">Limpiar</button>
+                </form>
+            </div>
+
+            <!-- Tabla de Productos -->
+            <div class="col-md-8">
+                <h2>Listado de Productos</h2>
+                <div class="table-container">
+                    <table class="table table-striped" id="productTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Descripción</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                                <th>Categoría</th>
+                                <th>Proveedor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Datos Quemados -->
+                            <tr>
+                                <td>1</td>
+                                <td>Laptop</td>
+                                <td>Computadora portátil</td>
+                                <td>$1200</td>
+                                <td>10</td>
+                                <td>Electrónica</td>
+                                <td>Proveedor A</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>Escritorio</td>
+                                <td>Escritorio de madera</td>
+                                <td>$250</td>
+                                <td>5</td>
+                                <td>Oficina</td>
+                                <td>Proveedor B</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>Televisor</td>
+                                <td>Televisor 4K 55 pulgadas</td>
+                                <td>$600</td>
+                                <td>8</td>
+                                <td>Electrónica</td>
+                                <td>Proveedor A</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

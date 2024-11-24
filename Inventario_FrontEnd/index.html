@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistema de Inventario</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/indexStyle.css">
+
+</head>
+<body>
+    <!-- Encabezado -->
+    <header>
+        <h1>Sistema de Inventario</h1>
+    </header>
+
+    <!-- Dashboard -->
+    <div class="container mt-4">
+        <div class="row text-center">
+            <h2 class="mb-4">Bienvenido al Dashboard</h2>
+        </div>
+
+        <!-- Resumen de Datos -->
+        <div class="row mb-5">
+            <div class="col-md-4">
+                <div class="card p-4">
+                    <div class="card-icon">📦</div>
+                    <h5>Total Productos</h5>
+                    <p id="totalProductos">0</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4">
+                    <div class="card-icon">📂</div>
+                    <h5>Total Categorías</h5>
+                    <p id="totalCategorias">0</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card p-4">
+                    <div class="card-icon">🏢</div>
+                    <h5>Total Proveedores</h5>
+                    <p id="totalProveedores">0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navegación Rápida -->
+        <div class="row nav-buttons">
+            <div class="col-md-4">
+                <a href="agregarProductos.html">
+                    <div class="card p-4 bg-primary text-white">
+                        <div class="card-icon">📦</div>
+                        <h5>Gestión de Productos</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="categorias.html">
+                    <div class="card p-4 bg-success text-white">
+                        <div class="card-icon">📂</div>
+                        <h5>Gestión de Categorías</h5>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="proveedores.html">
+                    <div class="card p-4 bg-warning text-white">
+                        <div class="card-icon">🏢</div>
+                        <h5>Gestión de Proveedores</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        // Simulación de datos para mostrar estadísticas
+        document.getElementById('totalProductos').textContent = 120; // Reemplazar con fetch de la API
+        document.getElementById('totalCategorias').textContent = 15; // Reemplazar con fetch de la API
+        document.getElementById('totalProveedores').textContent = 25; // Reemplazar con fetch de la API
+    </script>
+</body>
+</html>
