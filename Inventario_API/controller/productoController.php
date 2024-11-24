@@ -51,5 +51,9 @@ switch ($_GET["accion"]) {
         $resultado = $producto->eliminar_producto($data["id_producto"]);
         echo json_encode($resultado);
         break;
+
+    case "contar":
+        $totalProductos = $producto->contar_productos();  // Llamada al modelo para contar productos
+        echo json_encode(["total" => $totalProductos]);  // Devolver un objeto JSON con la clave 'total'
+        break;
 }
-?>

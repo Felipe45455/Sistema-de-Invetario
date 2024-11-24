@@ -79,4 +79,16 @@ class Producto extends Conectar
         $stmt->execute();
         return ["mensaje" => "Producto eliminado exitosamente"];
     }
+
+    public function contar_productos()
+    {
+        $conexion = parent::conectar_bd();
+        parent::establecer_codificacion();
+
+        $sql = "SELECT COUNT(*) as total FROM productos";
+        $stmt = $conexion->prepare($sql);
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado['total'];
+    }
 }
