@@ -59,5 +59,19 @@ class Categoria extends Conectar {
         $stmt->execute();
         return ["mensaje" => "Categoría eliminada exitosamente"];
     }
+
+    public function contar_categorias()
+    {
+        $conexion = parent::conectar_bd();
+        parent::establecer_codificacion();
+
+        $sql = "SELECT COUNT(*) as total FROM categorias";
+        $stmt = $conexion->prepare($sql);
+        $stmt->execute();
+        $resultado = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $resultado['total'];
+    }
 }
+
+
 ?>

@@ -36,8 +36,8 @@ class Producto extends Conectar
         $conexion = parent::conectar_bd();
         parent::establecer_codificacion();
 
-        $sql = "INSERT INTO productos (nombre, descripcion, precio, cantidad, id_categoria, id_proveedor) 
-                VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO productos (id_producto,nombre, descripcion, precio, cantidad, id_categoria, id_proveedor) 
+                VALUES (NULL,?, ?, ?, ?, ?, ?)";
         $stmt = $conexion->prepare($sql);
         $stmt->bindValue(1, $nombre);
         $stmt->bindValue(2, $descripcion);

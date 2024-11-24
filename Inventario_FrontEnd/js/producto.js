@@ -42,6 +42,7 @@ function llenarFormulario(producto) {
     // Activar los botones de editar y eliminar
     document.getElementById('editBtn').disabled = false;
     document.getElementById('deleteBtn').disabled = false;
+    document.getElementById('addBtn').disabled = true;
 
     // Establecer un atributo para identificar el producto
     document.getElementById('editBtn').setAttribute('data-id', producto.id_producto);
@@ -97,28 +98,100 @@ function obtenerProveedores() {
 
 // Función para agregar un nuevo producto
 function agregarProducto() {
-    const producto = {
-        nombre: document.getElementById('nombre').value,
-        descripcion: document.getElementById('descripcion').value,
-        precio: parseFloat(document.getElementById('precio').value),
-        cantidad: parseInt(document.getElementById('cantidad').value),
-        id_categoria: parseInt(document.getElementById('categoria').value),
-        id_proveedor: parseInt(document.getElementById('proveedor').value)
+    // Capturar y limpiar los valores de los campos
+    const nombre = document.getElementById('nombre').value.trim();
+    const descripcion = document.getElementById('descripcion').value.trim();
+    const precio = parseFloat(document.getElementById('precio').value.trim()); // Faltaba el paréntesis de cierre
+    const cantidad = parseInt(document.getElementById('cantidad').value.trim(), 10);
+    const id_categoria = parseInt(document.getElementById('categoria').value.trim(), 10);
+    const id_proveedor = parseInt(document.getElementById('proveedor').value.trim(), 10);
+
+    console.log("Datos a enviar:", { nombre, descripcion, precio, cantidad, id_categoria, id_proveedor }); // Verifica los datos
+
+    // Validaciones
+    if (!nombre || !descripcion) {
+        console.warn("Campos de texto vacíos detectados. Operación cancelada.");
+        alert('Por favor, completa los campos de nombre y descripción.');
+        return;
+    }
+
+    if (isNaN(precio) || precio <= 0) {
+        console.warn("El precio es inválido o menor o igual a cero. Operación cancelada.");
+        alert('Por favor, ingresa un precio válido (número decimal mayor a 0).');
+        return;
+    }
+
+    if (isNaN(cantidad) || cantidad < 0) {
+        console.warn("La cantidad es inválida o menor a cero. Operación cancelada.");
+        alert('Por favor, ingresa una cantidad válida (entero mayor o igual a 0).');
+        return;
+    }
+
+    if (isNaN(id_categoria) || id_categoria <= 0) {
+        console.warn("El ID de categoría es inválido o menor o igual a cero. Operación cancelada.");
+        alert('Por favor, selecciona una categoría válida.');
+        return;
+    }
+
+    if (isNaN(id_proveedor) || id_proveedor <= 0) {
+        console.warn("El ID de proveedor es inválido o menor o igual a cero. Operación cancelada.");
+        alert('Por favor, selecciona un proveedor válido.');
+        return;
+    }
+
+    // Construir el objeto del producto
+    const producto = { 
+        nombre, 
+        descripcion, 
+        precio, // Asegurar el formato de precio como decimal (10,2)
+        cantidad, 
+        id_categoria, 
+        id_proveedor 
     };
 
+    console.log(producto)
+
+    // Realizar la solicitud al API
     fetch(apiUrl + 'crear', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(producto)
+        headers: { 
+            'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(producto),
     })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.mensaje);
-        obtenerProductos(); // Actualizar la lista de productos
-        limpiarFormulario();
-    })
-    .catch(error => console.error('Error al agregar producto:', error));
+        .then(response => {
+            console.log("Respuesta cruda del servidor:", response); // Verifica la respuesta inicial
+
+            // Validar la respuesta HTTP
+            if (!response.ok) {
+                throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
+            }
+
+            return response.json(); // Procesar la respuesta JSON
+        })
+        .then(data => {
+            console.log("Respuesta procesada:", data); // Verifica la respuesta JSON
+
+            // Validar el formato de la respuesta
+            if (!data || !data.mensaje) {
+                throw new Error("La respuesta del servidor no contiene el formato esperado.");
+            }
+
+            // Mostrar mensaje de éxito
+            alert(data.mensaje);
+
+            // Actualizar la lista de productos y limpiar el formulario
+            obtenerProductos();
+            limpiarFormulario();
+        })
+        .catch(error => {
+            // Manejo de errores
+            console.error("Error al agregar producto:", error);
+            alert('Ocurrió un error al agregar el producto. Por favor, intenta nuevamente.');
+        });
 }
+
+
 
 // Función para actualizar un producto
 function actualizarProducto() {
@@ -142,8 +215,11 @@ function actualizarProducto() {
         alert(data.mensaje);
         obtenerProductos(); // Actualizar la lista de productos
         limpiarFormulario();
+        document.getElementById('addBtn').disabled = false;
     })
     .catch(error => console.error('Error al actualizar producto:', error));
+
+    
 }
 
 // Función para eliminar un producto
@@ -160,8 +236,13 @@ function eliminarProducto() {
         alert(data.mensaje);
         obtenerProductos(); // Actualizar la lista de productos
         limpiarFormulario();
+        document.getElementById('addBtn').disabled = false;
     })
     .catch(error => console.error('Error al eliminar producto:', error));
+
+   
+
+    
 }
 
 // Función para limpiar el formulario
@@ -169,6 +250,7 @@ function limpiarFormulario() {
     document.getElementById('productForm').reset();
     document.getElementById('editBtn').disabled = true;
     document.getElementById('deleteBtn').disabled = true;
+    document.getElementById('addBtn').disabled = false;
 }
 
 // Inicializar la tabla de productos al cargar la página

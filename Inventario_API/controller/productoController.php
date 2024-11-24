@@ -1,11 +1,15 @@
 <?php
 header("Content-Type: application/json");
-// Agregar estas líneas al principio del archivo
+// Habilitar CORS
 header('Access-Control-Allow-Origin: *'); // Permite cualquier origen
-header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE'); // Permite estos métodos
-header('Access-Control-Allow-Headers: Content-Type'); // Permite este encabezado
+header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS'); // Permite métodos HTTP
+header('Access-Control-Allow-Headers: Content-Type'); // Permite encabezados específicos
 
-
+// Manejo de solicitudes OPTIONS (preflight)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 require_once("../models/productoModel.php");
 
 $producto = new Producto();
