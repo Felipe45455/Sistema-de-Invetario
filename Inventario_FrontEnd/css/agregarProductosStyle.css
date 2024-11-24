@@ -1,0 +1,19 @@
+body {
+    background-color: #f8f9fa;
+}
+header {
+    background-color: #343a40;
+    color: #ffffff;
+    padding: 1rem 0;
+    text-align: center;
+}
+.container {
+    margin-top: 2rem;
+}
+.form-control, .btn {
+    margin-bottom: 10px;
+}
+.table-container {
+    max-height: 400px;
+    overflow-y: auto;
+}

@@ -1,13 +1,15 @@
 <?php
 require_once("../config/conexion.php");
 
-class Producto extends Conectar {
-    
-    public function listar_productos() {
+class Producto extends Conectar
+{
+
+    public function listar_productos()
+    {
         $conexion = parent::conectar_bd();
         parent::establecer_codificacion();
 
-        $sql = "SELECT p.id_producto, p.nombre, p.descripcion, p.precio, p.cantidad, 
+        $sql = "SELECT p.id_producto, p.nombre, p.descripcion, p.precio, p.cantidad, p.id_categoria, p.id_proveedor, 
                        c.nombre AS categoria, pr.nombre AS proveedor
                 FROM productos p
                 LEFT JOIN categorias c ON p.id_categoria = c.id_categoria
@@ -17,7 +19,8 @@ class Producto extends Conectar {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function obtener_producto_por_id($id) {
+    public function obtener_producto_por_id($id)
+    {
         $conexion = parent::conectar_bd();
         parent::establecer_codificacion();
 
@@ -28,7 +31,8 @@ class Producto extends Conectar {
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
-    public function agregar_producto($nombre, $descripcion, $precio, $cantidad, $id_categoria, $id_proveedor) {
+    public function agregar_producto($nombre, $descripcion, $precio, $cantidad, $id_categoria, $id_proveedor)
+    {
         $conexion = parent::conectar_bd();
         parent::establecer_codificacion();
 
@@ -45,7 +49,8 @@ class Producto extends Conectar {
         return ["mensaje" => "Producto agregado exitosamente"];
     }
 
-    public function actualizar_producto($id, $nombre, $descripcion, $precio, $cantidad, $id_categoria, $id_proveedor) {
+    public function actualizar_producto($id, $nombre, $descripcion, $precio, $cantidad, $id_categoria, $id_proveedor)
+    {
         $conexion = parent::conectar_bd();
         parent::establecer_codificacion();
 
@@ -63,7 +68,8 @@ class Producto extends Conectar {
         return ["mensaje" => "Producto actualizado correctamente"];
     }
 
-    public function eliminar_producto($id) {
+    public function eliminar_producto($id)
+    {
         $conexion = parent::conectar_bd();
         parent::establecer_codificacion();
 
@@ -74,4 +80,3 @@ class Producto extends Conectar {
         return ["mensaje" => "Producto eliminado exitosamente"];
     }
 }
-?>

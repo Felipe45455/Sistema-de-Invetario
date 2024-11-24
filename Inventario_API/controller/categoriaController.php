@@ -5,50 +5,41 @@ header('Access-Control-Allow-Origin: *'); // Permite cualquier origen
 header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE'); // Permite estos métodos
 header('Access-Control-Allow-Headers: Content-Type'); // Permite este encabezado
 
+require_once("../models/categoriaModel.php");
 
-require_once("../models/productoModel.php");
-
-$producto = new Producto();
+$categoria = new Categoria();
 $data = json_decode(file_get_contents("php://input"), true);
 
 switch ($_GET["accion"]) {
     case "listar":
-        $resultado = $producto->listar_productos();
+        $resultado = $categoria->listar_categorias();
         echo json_encode($resultado);
         break;
 
     case "detalle":
-        $resultado = $producto->obtener_producto_por_id($data["id_producto"]);
+        $resultado = $categoria->obtener_categoria_por_id($data["id_categoria"]);
         echo json_encode($resultado);
         break;
 
     case "crear":
-        $resultado = $producto->agregar_producto(
+        $resultado = $categoria->agregar_categoria(
             $data["nombre"],
-            $data["descripcion"],
-            $data["precio"],
-            $data["cantidad"],
-            $data["id_categoria"],
-            $data["id_proveedor"]
+            $data["descripcion"]
         );
         echo json_encode($resultado);
         break;
 
     case "actualizar":
-        $resultado = $producto->actualizar_producto(
-            $data["id_producto"],
-            $data["nombre"],
-            $data["descripcion"],
-            $data["precio"],
-            $data["cantidad"],
+        $resultado = $categoria->actualizar_categoria(
             $data["id_categoria"],
-            $data["id_proveedor"]
+            $data["nombre"],
+            $data["descripcion"]
         );
         echo json_encode($resultado);
         break;
 
     case "eliminar":
-        $resultado = $producto->eliminar_producto($data["id_producto"]);
+        $resultado = $categoria->eliminar_categoria($data["id_categoria"]);
         echo json_encode($resultado);
         break;
 }
