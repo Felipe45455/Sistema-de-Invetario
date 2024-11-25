@@ -1,8 +1,8 @@
-const apiUrl = 'http://localhost/Sistema-de-Invetario/Inventario_API/controller/categoriaController.php?accion=';
+const apiUrlCt = 'http://apiprueba.42web.io/Inventario_API/controller/categoriaController.php?accion=';
 
 // Función para obtener categorías
 function obtenerCategorias() {
-    fetch(apiUrl + 'listar')
+    fetch(apiUrlCt + 'listar')
         .then(response => response.json())
         .then(data => {
             const categoryTable = document.getElementById('categoryTable').getElementsByTagName('tbody')[0];
@@ -55,7 +55,7 @@ function agregarCategoria() {
     const categoria = { nombre, descripcion };
 
     // Realizar la solicitud al API
-    fetch(apiUrl + 'crear', {
+    fetch(apiUrlCt + 'crear', {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json' 
@@ -103,7 +103,7 @@ function actualizarCategoria() {
         descripcion: document.getElementById('descripcion').value,
     };
 
-    fetch(apiUrl + 'actualizar', {
+    fetch(apiUrlCt + 'actualizar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(categoria)
@@ -123,7 +123,7 @@ function actualizarCategoria() {
 function eliminarCategoria() {
     const idCategoria = document.getElementById('deleteBtn').getAttribute('data-id');
 
-    fetch(apiUrl + 'eliminar', {
+    fetch(apiUrlCt + 'eliminar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_categoria: idCategoria })

@@ -1,3 +1,15 @@
 Datos de base de datos
 
-mysql://root:qsuSOLSCpdVaWZActWqBYOCQyCRlgFlt@autorack.proxy.rlwy.net:42658/railway
+host  206.infinityfree.com
+
+user  if0_37779892
+
+password  k2Sc66vORgy3
+
+port  3306
+
+db   if0_37779892_inventario
+
+
+
+

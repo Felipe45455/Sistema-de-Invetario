@@ -1,8 +1,8 @@
-const apiUrl = 'http://localhost/Sistema-de-Invetario/Inventario_API/controller/proveedorController.php?accion=';
+const apiUrlPv = 'http://apiprueba.42web.io/Inventario_API/controller/proveedorController.php?accion=';
 
 // Función para obtener proveedores
 function obtenerProveedores() {
-    fetch(apiUrl + 'listar')
+    fetch(apiUrlPv + 'listar')
         .then(response => response.json())
         .then(data => {
             const providerTable = document.getElementById('providerTable').getElementsByTagName('tbody')[0];
@@ -46,7 +46,7 @@ function agregarProveedor() {
         direccion: document.getElementById('direccion').value,
     };
 
-    fetch(apiUrl + 'crear', {
+    fetch(apiUrlPv + 'crear', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(proveedor)
@@ -69,7 +69,7 @@ function actualizarProveedor() {
         direccion: document.getElementById('direccion').value,
     };
 
-    fetch(apiUrl + 'actualizar', {
+    fetch(apiUrlPv + 'actualizar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(proveedor)
@@ -88,7 +88,7 @@ function actualizarProveedor() {
 function eliminarProveedor() {
     const idProveedor = document.getElementById('deleteBtn').getAttribute('data-id');
 
-    fetch(apiUrl + 'eliminar', {
+    fetch(apiUrlPv + 'eliminar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_proveedor: idProveedor })

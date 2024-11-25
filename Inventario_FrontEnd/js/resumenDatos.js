@@ -1,6 +1,7 @@
-const apiUrlProductos = "http://localhost/Sistema-de-Invetario/Inventario_API/controller/productoController.php";
-const apiUrlCategorias = "http://localhost/Sistema-de-Invetario/Inventario_API/controller/categoriaController.php";
-const apiUrlProveedores = "http://localhost/Sistema-de-Invetario/Inventario_API/controller/proveedorController.php";
+const apiUrlProductos = "http://apiprueba.42web.io/Inventario_API/controller/productoController.php";
+const apiUrlCategorias = "http://apiprueba.42web.io/Inventario_API/controller/categoriaController.php";
+const apiUrlProveedores = "http://apiprueba.42web.io/Inventario_API/controller/proveedorController.php";
+
 
 document.addEventListener("DOMContentLoaded", function () {
     // Obtener total de productos

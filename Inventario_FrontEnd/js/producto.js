@@ -1,10 +1,10 @@
 // producto.js
 
-const apiUrl = 'http://localhost/Sistema-de-Invetario/Inventario_API/controller/productoController.php?accion=';
+const apiUrlPd = 'http://apiprueba.42web.io/Inventario_API/controller/productoController.php?accion=';
 
 // Función para obtener productos
 function obtenerProductos() {
-    fetch(apiUrl + 'listar')
+    fetch(apiUrlPd + 'listar')
         .then(response => response.json())
         .then(data => {
             const productTable = document.getElementById('productTable').getElementsByTagName('tbody')[0];
@@ -52,7 +52,7 @@ function llenarFormulario(producto) {
 
 function obtenerCategorias() {
     // Realizar la solicitud a la API para obtener las categorías
-    fetch("http://localhost/Sistema-de-Invetario/Inventario_API/controller/categoriaController.php?accion=listar")
+    fetch("http://apiprueba.42web.io/Inventario_API/controller/categoriaController.php?accion=listar")
         .then(response => response.json())
         .then(data => {
             // Obtener el select de categorías
@@ -75,7 +75,7 @@ function obtenerCategorias() {
 
 function obtenerProveedores() {
     // Realizar la solicitud a la API para obtener los proveedores
-    fetch("http://localhost/Sistema-de-Invetario/Inventario_API/controller/proveedorController.php?accion=listar")
+    fetch("http://apiprueba.42web.io/Inventario_API/controller/proveedorController.php?accion=listar")
         .then(response => response.json())
         .then(data => {
             // Obtener el select de proveedores
@@ -152,7 +152,7 @@ function agregarProducto() {
     console.log(producto)
 
     // Realizar la solicitud al API
-    fetch(apiUrl + 'crear', {
+    fetch(apiUrlPd + 'crear', {
         method: 'POST',
         headers: { 
             'Content-Type': 'application/json' 
@@ -205,7 +205,7 @@ function actualizarProducto() {
         id_proveedor: parseInt(document.getElementById('proveedor').value)
     };
 
-    fetch(apiUrl + 'actualizar', {
+    fetch(apiUrlPd + 'actualizar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(producto)
@@ -226,7 +226,7 @@ function actualizarProducto() {
 function eliminarProducto() {
     const idProducto = document.getElementById('deleteBtn').getAttribute('data-id');
 
-    fetch(apiUrl + 'eliminar', {
+    fetch(apiUrlPd + 'eliminar', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_producto: idProducto })
