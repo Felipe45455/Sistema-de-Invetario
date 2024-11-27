@@ -1,4 +1,4 @@
-const apiUrlPv = 'http://localhost/Sistema-de-Invetario/nventario_API/controller/proveedorController.php?accion=';
+const apiUrlPv = 'http://localhost/Sistema-de-Invetario/Inventario_API/controller/proveedorController.php?accion=';
 
 // Función para obtener proveedores
 function obtenerProveedores() {
@@ -121,3 +121,27 @@ document.getElementById('addBtn').addEventListener('click', agregarProveedor);
 document.getElementById('editBtn').addEventListener('click', actualizarProveedor);
 document.getElementById('deleteBtn').addEventListener('click', eliminarProveedor);
 document.getElementById('clearBtn').addEventListener('click', limpiarFormulario);
+
+
+// Función para filtrar los proveedores en la tabla
+function filtrarProveedores() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase(); // Texto del campo de búsqueda
+    const providerTable = document.getElementById('providerTable').getElementsByTagName('tbody')[0];
+    const rows = providerTable.getElementsByTagName('tr'); // Todas las filas de la tabla
+
+    for (let row of rows) {
+        const nombre = row.cells[1].textContent.toLowerCase(); // Columna "Nombre"
+        const telefono = row.cells[2].textContent.toLowerCase(); // Columna "Teléfono"
+        const direccion = row.cells[3].textContent.toLowerCase(); // Columna "Dirección"
+
+        // Verificar si alguno de los campos contiene el texto de búsqueda
+        if (nombre.includes(searchInput) || telefono.includes(searchInput) || direccion.includes(searchInput)) {
+            row.style.display = ''; // Mostrar la fila
+        } else {
+            row.style.display = 'none'; // Ocultar la fila
+        }
+    }
+}
+
+// Agregar el evento de búsqueda al campo
+document.getElementById('searchInput').addEventListener('input', filtrarProveedores);

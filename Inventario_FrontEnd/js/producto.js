@@ -265,3 +265,28 @@ document.getElementById('addBtn').addEventListener('click', agregarProducto);
 document.getElementById('editBtn').addEventListener('click', actualizarProducto);
 document.getElementById('deleteBtn').addEventListener('click', eliminarProducto);
 document.getElementById('clearBtn').addEventListener('click', limpiarFormulario);
+
+// Función para filtrar los productos en la tabla
+function filtrarProductos() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase(); // Texto del campo de búsqueda
+    const productTable = document.getElementById('productTable').getElementsByTagName('tbody')[0];
+    const rows = productTable.getElementsByTagName('tr'); // Todas las filas de la tabla
+
+    for (let row of rows) {
+        const nombre = row.cells[1].textContent.toLowerCase(); // Columna "Nombre"
+        const descripcion = row.cells[2].textContent.toLowerCase(); // Columna "Descripción"
+        const categoria = row.cells[5].textContent.toLowerCase(); // Columna "Categoría"
+        const proveedor = row.cells[6].textContent.toLowerCase(); // Columna "Proveedor"
+
+        // Verificar si alguno de los campos contiene el texto de búsqueda
+        if (nombre.includes(searchInput) || descripcion.includes(searchInput) || categoria.includes(searchInput) || proveedor.includes(searchInput)) {
+            row.style.display = ''; // Mostrar la fila
+        } else {
+            row.style.display = 'none'; // Ocultar la fila
+        }
+    }
+}
+
+// Agregar el evento de búsqueda al campo
+document.getElementById('searchInput').addEventListener('input', filtrarProductos);
+

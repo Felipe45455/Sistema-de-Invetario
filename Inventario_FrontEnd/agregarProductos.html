@@ -47,6 +47,7 @@
         <div class="row">
             <div class="col-md-4">
                 <h2 class="text-center">Gestión de Productos</h2>
+            
                 <form id="productForm">
                     <div class="mb-3">
                         <label for="nombre" class="form-label">Nombre del Producto</label>
@@ -86,6 +87,9 @@
             <!-- Tabla de Productos -->
             <div class="col-md-8">
                 <h2 class="text-center mb-4">Listado de Productos</h2>
+                <div class="mb-3">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Buscar por nombre, descripción, categoría o proveedor">
+                </div>
                 <div class="table-container mt-3">
                     <table class="table table-striped" id="productTable">
                         <thead>
