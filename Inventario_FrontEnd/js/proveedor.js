@@ -1,4 +1,4 @@
-const apiUrlPv = 'http://apiprueba.42web.io/Inventario_API/controller/proveedorController.php?accion=';
+const apiUrlPv = 'http://localhost/Sistema-de-Invetario/nventario_API/controller/proveedorController.php?accion=';
 
 // Función para obtener proveedores
 function obtenerProveedores() {

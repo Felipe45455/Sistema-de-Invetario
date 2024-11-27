@@ -1,4 +1,4 @@
-const apiUrlCt = 'http://apiprueba.42web.io/Inventario_API/controller/categoriaController.php?accion=';
+const apiUrlCt = 'http://localhost/Sistema-de-Invetario/Inventario_API/controller/categoriaController.php?accion=';
 
 // Función para obtener categorías
 function obtenerCategorias() {

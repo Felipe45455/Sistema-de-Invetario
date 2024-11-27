@@ -1,6 +1,6 @@
 // producto.js
 
-const apiUrlPd = 'http://apiprueba.42web.io/Inventario_API/controller/productoController.php?accion=';
+const apiUrlPd = 'http://localhost/Sistema-de-Invetario/Inventario_API/controller/productoController.php?accion=';
 
 // Función para obtener productos
 function obtenerProductos() {
@@ -52,7 +52,7 @@ function llenarFormulario(producto) {
 
 function obtenerCategorias() {
     // Realizar la solicitud a la API para obtener las categorías
-    fetch("http://apiprueba.42web.io/Inventario_API/controller/categoriaController.php?accion=listar")
+    fetch("http://localhost/Sistema-de-Invetario/Inventario_API/controller/categoriaController.php?accion=listar")
         .then(response => response.json())
         .then(data => {
             // Obtener el select de categorías
@@ -75,7 +75,7 @@ function obtenerCategorias() {
 
 function obtenerProveedores() {
     // Realizar la solicitud a la API para obtener los proveedores
-    fetch("http://apiprueba.42web.io/Inventario_API/controller/proveedorController.php?accion=listar")
+    fetch("http://localhost/Sistema-de-Invetario/Inventario_API/controller/proveedorController.php?accion=listar")
         .then(response => response.json())
         .then(data => {
             // Obtener el select de proveedores
