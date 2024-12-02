@@ -1,31 +1,82 @@
-// producto.js
 
-const apiUrlPd = 'http://apiprueba.42web.io/Inventario_API/controller/productoController.php?accion=';
+const apiUrlPd = 'http://localhost/Sistema-de-Invetario/Inventario_API/controller/productoController.php';
 
-// Función para obtener productos
-function obtenerProductos() {
-    fetch(apiUrlPd + 'listar')
-        .then(response => response.json())
-        .then(data => {
-            const productTable = document.getElementById('productTable').getElementsByTagName('tbody')[0];
-            productTable.innerHTML = ''; // Limpiar la tabla antes de agregar los nuevos productos
+let cedula = null;
+let contrasena = '';
 
-            data.forEach(producto => {
-                const row = productTable.insertRow();
-                row.innerHTML = `
-                    <td>${producto.id_producto}</td>
-                    <td>${producto.nombre}</td>
-                    <td>${producto.descripcion}</td>
-                    <td>$${producto.precio}</td>
-                    <td>${producto.cantidad}</td>
-                    <td>${producto.categoria}</td>
-                    <td>${producto.proveedor}</td>
-                `;
-                row.addEventListener('click', () => llenarFormulario(producto));
-            });
+// Mostrar el modal al cargar la página
+document.addEventListener("DOMContentLoaded", function () {
+    const cedulaModal = new bootstrap.Modal(document.getElementById('cedulaModal'), {
+        backdrop: 'static', // Evita cerrar el modal haciendo clic fuera
+        keyboard: false      // Evita cerrarlo con el teclado
+    });
+    cedulaModal.show();
+
+    // Botón para aceptar la cédula y contrasena
+    document.getElementById('submitCedulaBtn').addEventListener('click', function () {
+        cedula = document.getElementById('cedulaInput').value.trim();
+        contrasena = document.getElementById('passwordInput').value.trim();
+
+        if (cedula === "" || contrasena === "") {
+            alert("Por favor, ingrese su cédula y contrasena.");
+        } else {
+            cedulaModal.hide();
+            obtenerProductos()
+            console.log("Cédula ingresada:", cedula);
+            // Aquí puedes manejar la cédula y la contrasena, por ejemplo, enviarlas al servidor si es necesario.
+        }
+    });
+});
+
+    // Función para obtener productos
+    function obtenerProductos() {
+        console.log(cedula)
+        console.log("URL del API:", apiUrlPd);
+
+
+        console.log("Encabezados de la solicitud:", {
+            'Cedula': parseInt(cedula)
+        });
+        fetch('http://localhost/Sistema-de-Invetario/Inventario_API/controller/productoController.php', {
+            method: 'GET',
+            headers: {
+                'Cedula': parseInt(cedula)  // Convierte la cédula a cadena si es necesario
+            }
         })
-        .catch(error => console.error('Error al obtener productos:', error));
-}
+            .then(response => {
+                console.log(response)   
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`Error ${response.status}: ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Datos obtenidos:", data);
+                const productTable = document.getElementById('productTable').getElementsByTagName('tbody')[0];
+                productTable.innerHTML = ''; // Limpiar la tabla antes de agregar los nuevos productos
+        
+                // Insertar las filas en la tabla
+                data.forEach(producto => {
+                    const row = productTable.insertRow();
+                    row.innerHTML = `
+                        <td>${producto.id_producto}</td>
+                        <td>${producto.nombre}</td>
+                        <td>${producto.descripcion}</td>
+                        <td>$${producto.precio}</td>
+                        <td>${producto.cantidad}</td>
+                        <td>${producto.categoria}</td>
+                        <td>${producto.proveedor}</td>
+                    `;
+                    row.addEventListener('click', () => llenarFormulario(producto));
+                });
+            })
+            .catch(error => {
+                console.error('Error al obtener productos:', error);
+            });
+    }
+
 
 // Función para llenar el formulario con los datos del producto
 function llenarFormulario(producto) {
@@ -47,12 +98,15 @@ function llenarFormulario(producto) {
     // Establecer un atributo para identificar el producto
     document.getElementById('editBtn').setAttribute('data-id', producto.id_producto);
     document.getElementById('deleteBtn').setAttribute('data-id', producto.id_producto);
+
+
 }
+
 
 
 function obtenerCategorias() {
     // Realizar la solicitud a la API para obtener las categorías
-    fetch("http://apiprueba.42web.io/Inventario_API/controller/categoriaController.php?accion=listar")
+    fetch("http://localhost/Sistema-de-Invetario/Inventario_API/controller/categoriaController.php?accion=listar")
         .then(response => response.json())
         .then(data => {
             // Obtener el select de categorías
@@ -75,7 +129,7 @@ function obtenerCategorias() {
 
 function obtenerProveedores() {
     // Realizar la solicitud a la API para obtener los proveedores
-    fetch("http://apiprueba.42web.io/Inventario_API/controller/proveedorController.php?accion=listar")
+    fetch("http://localhost/Sistema-de-Invetario/Inventario_API/controller/proveedorController.php?accion=listar")
         .then(response => response.json())
         .then(data => {
             // Obtener el select de proveedores
@@ -97,11 +151,11 @@ function obtenerProveedores() {
 }
 
 // Función para agregar un nuevo producto
-function agregarProducto() {
+async function agregarProducto() {
     // Capturar y limpiar los valores de los campos
     const nombre = document.getElementById('nombre').value.trim();
     const descripcion = document.getElementById('descripcion').value.trim();
-    const precio = parseFloat(document.getElementById('precio').value.trim()); // Faltaba el paréntesis de cierre
+    const precio = parseFloat(document.getElementById('precio').value.trim());
     const cantidad = parseInt(document.getElementById('cantidad').value.trim(), 10);
     const id_categoria = parseInt(document.getElementById('categoria').value.trim(), 10);
     const id_proveedor = parseInt(document.getElementById('proveedor').value.trim(), 10);
@@ -143,107 +197,56 @@ function agregarProducto() {
     const producto = { 
         nombre, 
         descripcion, 
-        precio, // Asegurar el formato de precio como decimal (10,2)
+        precio, 
         cantidad, 
         id_categoria, 
         id_proveedor 
     };
 
-    console.log(producto)
-
-    // Realizar la solicitud al API
-    fetch(apiUrlPd + 'crear', {
-        method: 'POST',
-        headers: { 
-            'Content-Type': 'application/json' 
-        },
-        body: JSON.stringify(producto),
-    })
-        .then(response => {
-            console.log("Respuesta cruda del servidor:", response); // Verifica la respuesta inicial
-
-            // Validar la respuesta HTTP
-            if (!response.ok) {
-                throw new Error(`Error en la solicitud: ${response.status} ${response.statusText}`);
-            }
-
-            return response.json(); // Procesar la respuesta JSON
-        })
-        .then(data => {
-            console.log("Respuesta procesada:", data); // Verifica la respuesta JSON
-
-            // Validar el formato de la respuesta
-            if (!data || !data.mensaje) {
-                throw new Error("La respuesta del servidor no contiene el formato esperado.");
-            }
-
-            // Mostrar mensaje de éxito
-            alert(data.mensaje);
-
-            // Actualizar la lista de productos y limpiar el formulario
-            obtenerProductos();
-            limpiarFormulario();
-        })
-        .catch(error => {
-            // Manejo de errores
-            console.error("Error al agregar producto:", error);
-            alert('Ocurrió un error al agregar el producto. Por favor, intenta nuevamente.');
-        });
-}
-
-
-
-// Función para actualizar un producto
-function actualizarProducto() {
-    const producto = {
-        id_producto: document.getElementById('editBtn').getAttribute('data-id'),
-        nombre: document.getElementById('nombre').value,
-        descripcion: document.getElementById('descripcion').value,
-        precio: parseFloat(document.getElementById('precio').value),
-        cantidad: parseInt(document.getElementById('cantidad').value),
-        id_categoria: parseInt(document.getElementById('categoria').value),
-        id_proveedor: parseInt(document.getElementById('proveedor').value)
-    };
-
-    fetch(apiUrlPd + 'actualizar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(producto)
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.mensaje);
-        obtenerProductos(); // Actualizar la lista de productos
-        limpiarFormulario();
-        document.getElementById('addBtn').disabled = false;
-    })
-    .catch(error => console.error('Error al actualizar producto:', error));
+    // Llamar a la función para hacer la solicitud POST encriptada
+    const url = `${apiUrlPd}`;  // Ajusta la URL según sea necesario
+    await hacerPeticionEncriptada('POST', url, producto, cedula, contrasena);
 
     
 }
 
 // Función para eliminar un producto
-function eliminarProducto() {
+async function eliminarProducto() {
     const idProducto = document.getElementById('deleteBtn').getAttribute('data-id');
+    console.log("ID del producto a eliminar:", idProducto);
 
-    fetch(apiUrlPd + 'eliminar', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_producto: idProducto })
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert(data.mensaje);
-        obtenerProductos(); // Actualizar la lista de productos
-        limpiarFormulario();
-        document.getElementById('addBtn').disabled = false;
-    })
-    .catch(error => console.error('Error al eliminar producto:', error));
+    // Construir la URL con el id_producto
+    const url = `${apiUrlPd}?id_producto=${idProducto}`;  // Ajusta la URL según sea necesario
 
-   
+    // Realizar la solicitud DELETE con fetch
+    const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+            'Cedula': parseInt(cedula)  // Agregar la cédula en el header
+        }
+    });
 
-    
+    // Verificar si la respuesta es exitosa
+    if (response.ok) {
+        const responseData = await response.json();
+        console.log("Respuesta del servidor:", responseData);
+
+        // Mostrar un mensaje de éxito
+        alert("Producto Eliminado");
+
+        // Llamadas a funciones adicionales si la operación fue exitosa
+        obtenerProductos();  // Actualizar la lista de productos
+        limpiarFormulario();  // Limpiar el formulario
+        document.getElementById('addBtn').disabled = false;  // Habilitar el botón de agregar producto
+    } else {
+        // Si la respuesta no es exitosa (status != 200), mostramos un error
+        alert("Error en la respuesta del servidor.");
+        console.error("Error en la respuesta:", response.status, response.statusText);
+    }
 }
+
+
 
 // Función para limpiar el formulario
 function limpiarFormulario() {
@@ -257,7 +260,6 @@ function limpiarFormulario() {
 document.addEventListener('DOMContentLoaded', () => {
     obtenerCategorias();
     obtenerProveedores();
-    obtenerProductos();
 });
 
 // Agregar el evento de clic para los botones
@@ -322,6 +324,7 @@ async function decryptJson(encrypted, secretKey) {
 
     return JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));  // Devuelve el JSON desencriptado
 }
+
 
 async function hacerPeticionEncriptada(method, url, data = null, cedula, contrasena) {
     console.log("Iniciando petición encriptada...");

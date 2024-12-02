@@ -1,4 +1,4 @@
-const apiUrlCt = 'http://apiprueba.42web.io/Inventario_API/controller/categoriaController.php?accion=';
+const apiUrlCt = 'http://localhost/Sistema-de-Invetario/Inventario_API/controller/categoriaController.php?accion=';
 
 // Función para obtener categorías
 function obtenerCategorias() {
@@ -156,3 +156,28 @@ document.getElementById('addBtn').addEventListener('click', agregarCategoria);
 document.getElementById('editBtn').addEventListener('click', actualizarCategoria);
 document.getElementById('deleteBtn').addEventListener('click', eliminarCategoria);
 document.getElementById('clearBtn').addEventListener('click', limpiarFormulario);
+
+
+// Función para filtrar las categorías en la tabla
+function filtrarCategorias() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase(); // Texto de búsqueda
+    const categoryTable = document.getElementById('categoryTable').getElementsByTagName('tbody')[0];
+    const rows = categoryTable.getElementsByTagName('tr'); // Todas las filas de la tabla
+
+    // Recorrer cada fila y verificar si coincide con el filtro
+    for (let row of rows) {
+        const nombre = row.cells[1].textContent.toLowerCase(); // Columna de nombre
+        const descripcion = row.cells[2].textContent.toLowerCase(); // Columna de descripción
+
+        // Mostrar u ocultar la fila en función del filtro
+        if (nombre.includes(searchInput) || descripcion.includes(searchInput)) {
+            row.style.display = ''; // Mostrar la fila
+        } else {
+            row.style.display = 'none'; // Ocultar la fila
+        }
+    }
+}
+
+// Agregar el evento de búsqueda al campo
+document.getElementById('searchInput').addEventListener('input', filtrarCategorias);
+
