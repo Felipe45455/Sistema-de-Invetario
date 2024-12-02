@@ -61,3 +61,42 @@ switch ($_GET["accion"]) {
         echo json_encode(["total" => $totalProductos]);  // Devolver un objeto JSON con la clave 'total'
         break;
 }
+
+/**
+ * Función para desencriptar el JSON recibido.
+ */
+function desencriptar_json($encryptedData, $clave)
+{
+    try {
+        $encryptedData = base64_decode($encryptedData);
+        if ($encryptedData === false) {
+            throw new Exception("Error al decodificar base64.");
+        }
+
+        $decryptedData = openssl_decrypt($encryptedData, "aes-256-ecb", $clave, OPENSSL_RAW_DATA);
+        if ($decryptedData === false) {
+            throw new Exception("Error al desencriptar los datos.");
+        }
+
+        return $decryptedData;
+    } catch (Exception $e) {
+        error_log("Error de desencriptado: " . $e->getMessage());
+        return null;
+    }
+
+    function encriptar_json($data, $clave)
+    {
+        try {
+            $encryptedData = openssl_encrypt($data, "aes-256-ecb", $clave, OPENSSL_RAW_DATA);
+            if ($encryptedData === false) {
+                throw new Exception("Error al encriptar los datos.");
+            }
+
+            return base64_encode($encryptedData);
+        } catch (Exception $e) {
+            error_log("Error de encriptado: " . $e->getMessage());
+            return null;
+        }
+    }
+}
+?>

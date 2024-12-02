@@ -265,3 +265,157 @@ document.getElementById('addBtn').addEventListener('click', agregarProducto);
 document.getElementById('editBtn').addEventListener('click', actualizarProducto);
 document.getElementById('deleteBtn').addEventListener('click', eliminarProducto);
 document.getElementById('clearBtn').addEventListener('click', limpiarFormulario);
+
+// Función para filtrar los productos en la tabla
+function filtrarProductos() {
+    const searchInput = document.getElementById('searchInput').value.toLowerCase(); // Texto del campo de búsqueda
+    const productTable = document.getElementById('productTable').getElementsByTagName('tbody')[0];
+    const rows = productTable.getElementsByTagName('tr'); // Todas las filas de la tabla
+
+    for (let row of rows) {
+        const nombre = row.cells[1].textContent.toLowerCase(); // Columna "Nombre"
+        const descripcion = row.cells[2].textContent.toLowerCase(); // Columna "Descripción"
+        const categoria = row.cells[5].textContent.toLowerCase(); // Columna "Categoría"
+        const proveedor = row.cells[6].textContent.toLowerCase(); // Columna "Proveedor"
+
+        // Verificar si alguno de los campos contiene el texto de búsqueda
+        if (nombre.includes(searchInput) || descripcion.includes(searchInput) || categoria.includes(searchInput) || proveedor.includes(searchInput)) {
+            row.style.display = ''; // Mostrar la fila
+        } else {
+            row.style.display = 'none'; // Ocultar la fila
+        }
+    }
+}
+
+// Agregar el evento de búsqueda al campo
+document.getElementById('searchInput').addEventListener('input', filtrarProductos);
+
+
+
+// Función para encriptar JSON usando CryptoJS
+async function encryptJson(json, secretKey) {
+    console.log("Iniciando encriptación del JSON...");
+
+    // Convertir el JSON a una cadena
+    const jsonString = JSON.stringify(json);
+    console.log("JSON como cadena:", jsonString);
+
+    // Encriptar usando AES-256-ECB
+    const encrypted = CryptoJS.AES.encrypt(jsonString, CryptoJS.enc.Utf8.parse(secretKey), {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7,
+    });
+    console.log("Resultado encriptado (Base64):", encrypted.toString());
+
+    return encrypted.toString();  // Devuelve el JSON encriptado en Base64
+}
+
+async function decryptJson(encrypted, secretKey) {
+    console.log("Iniciando desencriptación del JSON...");
+
+    // Desencriptar usando AES-256-ECB
+    const decrypted = CryptoJS.AES.decrypt(encrypted, CryptoJS.enc.Utf8.parse(secretKey), {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7,
+    });
+    console.log("Resultado desencriptado:", decrypted.toString(CryptoJS.enc.Utf8));
+
+    return JSON.parse(decrypted.toString(CryptoJS.enc.Utf8));  // Devuelve el JSON desencriptado
+}
+
+async function hacerPeticionEncriptada(method, url, data = null, cedula, contrasena) {
+    console.log("Iniciando petición encriptada...");
+
+    let body = null;
+    if (data) {
+        console.log("Encriptando datos antes de enviarlos...");
+        body = await encryptJson(data, contrasena);  // Encriptar los datos
+        console.log("Datos encriptados:", body);
+    }
+
+    const headers = {
+        "Content-Type": "application/json",
+        Cedula: parseInt(cedula),  // Asegurarse de que cedula esté definida correctamente
+    };
+    console.log("Encabezados:", headers);
+
+    console.log(data);
+
+    // Realizamos la petición usando fetch
+    const response = await fetch(url, {
+        method: method,
+        headers: headers,
+        body: body
+    });
+
+    console.log("Esperando respuesta del servidor...");
+
+ // Verificamos si la respuesta es exitosa (status 200)
+ if (response.ok) {
+
+
+    // Mostramos un mensaje dependiendo del método
+    if (method === "POST") {
+        alert("Producto Creado");
+    } else if (method === "PUT") {
+        alert("Producto Actualizado");
+    } 
+
+    // Llamadas a funciones adicionales si la operación fue exitosa
+    limpiarFormulario();
+    obtenerProductos();
+    obtenerCategorias();
+    obtenerProveedores();
+} else {
+    // Si la respuesta no es exitosa (status != 200), mostramos un error
+    alert("Error en la respuesta del servidor.");
+    console.error("Error en la respuesta:", response.status, response.statusText);
+}
+
+return response;  
+}
+
+
+
+// Función para actualizar un producto
+async function actualizarProducto() {
+    // Obtener el ID del producto desde el botón o elemento HTML que lo contiene
+    const idProducto = document.getElementById('editBtn').getAttribute('data-id');
+    console.log("ID del producto a editar:", idProducto);
+
+    // Obtener los valores del formulario
+    const producto = {
+        nombre: document.getElementById('nombre').value.trim(),
+        descripcion: document.getElementById('descripcion').value.trim(),
+        precio: parseFloat(document.getElementById('precio').value.trim()),
+        cantidad: parseInt(document.getElementById('cantidad').value.trim(), 10),
+        id_categoria: parseInt(document.getElementById('categoria').value.trim(), 10),
+        id_proveedor: parseInt(document.getElementById('proveedor').value.trim(), 10)
+    };
+
+    // Validar que todos los campos requeridos estén presentes
+    if (!producto.nombre || !producto.descripcion || isNaN(producto.precio) || isNaN(producto.cantidad)) {
+        alert('Por favor, completa todos los campos necesarios.');
+        return;
+    }
+
+    console.log("Producto a actualizar:", producto);
+
+    // Clave secreta (definida en una variable, por ejemplo contrasena)
+    const contrasena1 = contrasena;  // Asegúrate de que la variable contrasena esté definida
+    console.log("Clave secreta utilizada:", contrasena1);
+
+    // Validar cédula
+    const cedula1 = cedula;  // Asegúrate de que la variable cedula esté definida
+    console.log("Cédula utilizada:", cedula1);
+
+    // Construir la URL con el id_producto
+    const url = `${apiUrlPd}?id_producto=${idProducto}`;
+    console.log("URL de la petición:", url);
+
+    // Llamar a la función para hacer la solicitud PUT encriptada
+    await hacerPeticionEncriptada('PUT', url, producto, cedula1, contrasena1);
+    
+
+
+}
