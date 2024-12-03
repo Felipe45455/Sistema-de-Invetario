@@ -2,6 +2,8 @@
 class Conectar {
     protected $conexion_bd;
 
+    
+
     protected function conectar_bd() {
         try {
             $conexion = $this->conexion_bd = new PDO("mysql:host=localhost;dbname=inventario", "root", "");

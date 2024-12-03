@@ -35,29 +35,14 @@ if (!$usuario) {
     echo json_encode(["error" => "Usuario no encontrado para la cédula proporcionada."]);
     http_response_code(401);
     exit;
-} else {
-    // Depuración: muestra el usuario encontrado
-    error_log("Usuario encontrado: " . print_r($usuario, true)); // Loguear el usuario
 }
 
-// Solo leer el cuerpo si no es una solicitud GET
+// Clave para encriptar respuestas
+$clave = $usuario["contrasena"];
+
+// Leer el cuerpo si no es una solicitud GET
 $encryptedData = null;
-if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-    // Para el método DELETE, no necesitamos un cuerpo
-    // Solo obtenemos los parámetros de la URL (por ejemplo, id_producto)
-    if (isset($_GET["id_producto"])) {
-        $id_producto = $_GET["id_producto"];
-        // Aquí va tu lógica para eliminar el producto con el id proporcionado
-        // Llama a la función para eliminar el producto y devuelve el resultado
-        $resultado = $producto->eliminar_producto($id_producto);
-        echo json_encode($resultado);
-    } else {
-        echo json_encode(["error" => "ID del producto no proporcionado en la URL."]);
-        http_response_code(400);
-    }
-    exit;  // Salir después de procesar la solicitud DELETE
-} elseif ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-    // Para otros métodos, sigue con la lógica de manejar el cuerpo de la solicitud
+if ($_SERVER['REQUEST_METHOD'] !== 'GET' && $_SERVER['REQUEST_METHOD'] !== 'DELETE') {
     $encryptedData = file_get_contents("php://input");
 
     if (!$encryptedData) {
@@ -66,8 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         exit;
     }
 
-    // Desencriptar el JSON recibido usando la clave del usuario
-    $clave = $usuario["contrasena"];
+    // Desencriptar el JSON recibido
     $decryptedData = desencriptar_json($encryptedData, $clave);
 
     if ($decryptedData === null) {
@@ -85,6 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         exit;
     }
 }
+
 // Acciones basadas en el tipo de solicitud
 switch ($_SERVER['REQUEST_METHOD']) {
     case 'GET':
@@ -94,10 +79,10 @@ switch ($_SERVER['REQUEST_METHOD']) {
         } elseif (isset($_GET["id_producto"])) {
             $id_producto = $_GET["id_producto"];
             $producto_data = $producto->obtener_producto_por_id($id_producto);
-            echo json_encode($producto_data ?: ["error" => "Producto no encontrado."]);
+            responder_encriptado($producto_data ?: ["error" => "Producto no encontrado."], $clave);
         } else {
             $productos = $producto->listar_productos();
-            echo json_encode($productos);
+            responder_encriptado($productos, $clave);
         }
         break;
 
@@ -111,7 +96,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                 $data["id_categoria"],
                 $data["id_proveedor"]
             );
-            echo json_encode($resultado);
+            responder_encriptado($resultado, $clave);
         } else {
             echo json_encode(["error" => "Faltan datos necesarios para crear el producto."]);
             http_response_code(400);
@@ -131,7 +116,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
                     $data["id_categoria"],
                     $data["id_proveedor"]
                 );
-                echo json_encode($resultado);
+                responder_encriptado($resultado, $clave);
             } else {
                 echo json_encode(["error" => "Faltan datos necesarios para actualizar el producto."]);
                 http_response_code(400);
@@ -146,7 +131,7 @@ switch ($_SERVER['REQUEST_METHOD']) {
         if (isset($_GET["id_producto"])) {
             $id_producto = $_GET["id_producto"];
             $resultado = $producto->eliminar_producto($id_producto);
-            echo json_encode($resultado);
+            responder_encriptado($resultado, $clave);
         } else {
             echo json_encode(["error" => "ID del producto no proporcionado en la URL."]);
             http_response_code(400);
@@ -178,6 +163,37 @@ function desencriptar_json($encryptedData, $clave) {
     } catch (Exception $e) {
         error_log("Error de desencriptado: " . $e->getMessage());
         return null;
+    }
+}
+
+/**
+ * Función para encriptar los datos antes de responder.
+ */
+function encriptar_json($data, $clave) {
+    try {
+        $jsonData = json_encode($data);
+        $encryptedData = openssl_encrypt($jsonData, "aes-256-ecb", $clave, OPENSSL_RAW_DATA);
+        if ($encryptedData === false) {
+            throw new Exception("Error al encriptar los datos.");
+        }
+
+        return base64_encode($encryptedData);
+    } catch (Exception $e) {
+        error_log("Error de encriptado: " . $e->getMessage());
+        return null;
+    }
+}
+
+/**
+ * Función para enviar respuestas encriptadas.
+ */
+function responder_encriptado($data, $clave) {
+    $encryptedResponse = encriptar_json($data, $clave);
+    if ($encryptedResponse === null) {
+        echo json_encode(["error" => "Error al encriptar la respuesta."]);
+        http_response_code(500);
+    } else {
+        echo $encryptedResponse;
     }
 }
 ?>
