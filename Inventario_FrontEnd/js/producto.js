@@ -258,35 +258,44 @@ async function eliminarProducto() {
   // Construir la URL con el id_producto
   const url = `${apiUrlPd}?id_producto=${idProducto}`; // Ajusta la URL según sea necesario
 
-  // Realizar la solicitud DELETE con fetch
-  const response = await fetch(url, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Cedula: parseInt(cedula), // Agregar la cédula en el header
-    },
-  });
+  try {
+    // Realizar la solicitud DELETE con fetch
+    const response = await fetch(url, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Cedula: parseInt(cedula), // Agregar la cédula en el header
+      },
+    });
 
-  // Verificar si la respuesta es exitosa
-  if (response.ok) {
-    const responseData = await response.json();
-    console.log("Respuesta del servidor:", responseData);
+    if (response.ok) {
+      // Obtener el texto encriptado de la respuesta
+      const encryptedData = await response.text();
+      console.log("Datos encriptados recibidos:", encryptedData);
 
-    // Mostrar un mensaje de éxito
-    alert("Producto Eliminado");
+      // Desencriptar la respuesta
+      const responseData = decryptJson(encryptedData, contrasena);
+      console.log("Respuesta del servidor desencriptada:", responseData);
 
-    // Llamadas a funciones adicionales si la operación fue exitosa
-    obtenerProductos(); // Actualizar la lista de productos
-    limpiarFormulario(); // Limpiar el formulario
-    document.getElementById("addBtn").disabled = false; // Habilitar el botón de agregar producto
-  } else {
-    // Si la respuesta no es exitosa (status != 200), mostramos un error
-    alert("Error en la respuesta del servidor.");
-    console.error(
-      "Error en la respuesta:",
-      response.status,
-      response.statusText
-    );
+      // Mostrar un mensaje de éxito
+      alert("Producto Eliminado");
+
+      // Llamadas a funciones adicionales si la operación fue exitosa
+      obtenerProductos(); // Actualizar la lista de productos
+      limpiarFormulario(); // Limpiar el formulario
+      document.getElementById("addBtn").disabled = false; // Habilitar el botón de agregar producto
+    } else {
+      // Si la respuesta no es exitosa (status != 200), mostramos un error
+      alert("Error en la respuesta del servidor.");
+      console.error(
+        "Error en la respuesta:",
+        response.status,
+        response.statusText
+      );
+    }
+  } catch (error) {
+    console.error("Error al eliminar el producto:", error);
+    alert("Error al procesar la solicitud.");
   }
 }
 
