@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
         method: "GET", // La solicitud es GET, por lo que no necesitamos un 'body'
         headers: {
             "Content-Type": "application/json",
+            "Cedula": 12
         },
     })
         .then((response) => response.json()) // Convertimos la respuesta a JSON
